@@ -6,11 +6,11 @@ import java.io.IOException;
 public class HTTPMarshaller {
     public HTTPRequest getHTTPRequest(BufferedReader clientRequest) {
         StringBuilder headersBuilder = new StringBuilder();
-        String firstHeader;
+        String requestLine;
 
         try {
-            firstHeader = clientRequest.readLine();
-            HTTPRequest request = new HTTPRequest(firstHeader);
+            requestLine = clientRequest.readLine();
+            HTTPRequest request = new HTTPRequest(requestLine);
 
             String line;
             while ((line = clientRequest.readLine()) != null && !line.isEmpty()) {

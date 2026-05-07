@@ -5,23 +5,22 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import br.imd.ufrn.Annotations.Get;
-import br.imd.ufrn.Annotations.RemoteObject;
+import br.imd.ufrn.Annotations.RemoteService;
 
 public class LookupService {
-    public HashMap<String, Class<?>> remoteObjects;
+    public HashMap<String, Class<?>> remoteServices;
 
     public LookupService() {
-        remoteObjects = new HashMap<>();
+        remoteServices = new HashMap<>();
     }
 
-    public void register(Object object) {
-        Class<?> clazz = object.getClass();
+    public void register(Class<?> serviceClass) {
 
-        if(clazz.isAnnotationPresent(RemoteObject.class)) {
-            RemoteObject annotation = clazz.getAnnotation(RemoteObject.class);
+        if(serviceClass.isAnnotationPresent(RemoteService.class)) {
+            RemoteService annotation = serviceClass.getAnnotation(RemoteService.class);
             String id = annotation.value();
             System.out.println("Salvando Remote Object com id: " + id);
-            remoteObjects.put(id, clazz);
+            remoteServices.put(id, serviceClass);
 
             // for (Method method : clazz.getDeclaredMethods()) {
             //     if (method.isAnnotationPresent((Class<? extends Annotation>) Get.class)) {
@@ -31,7 +30,7 @@ public class LookupService {
         }
     }
 
-    public Class<?> getRomoteObject(String id){
-        return remoteObjects.get(id);
+    public Class<?> getServiceClass(String id){
+        return remoteServices.get(id);
     }
 }

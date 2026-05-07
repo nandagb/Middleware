@@ -9,6 +9,7 @@ import java.net.Socket;
 import br.imd.ufrn.HTTP.HTTPMarshaller;
 import br.imd.ufrn.HTTP.HTTPRequest;
 import br.imd.ufrn.Invoker.Invoker;
+import br.imd.ufrn.Invoker.LookupService;
 
 public class TCPRequestHandler {
     int port;
