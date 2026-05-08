@@ -9,6 +9,8 @@ public class HTTPRequest {
     private String path;
     private String queryString;
     private String requestLine;
+    private String resource;
+    private String route;
     private Map<String, String> queryParams;
 
 
@@ -42,6 +44,10 @@ public class HTTPRequest {
         } else {
             this.path = pathQuery;
         }
+
+        String[] pathParts = this.path.split("/");
+        this.resource = "/" + pathParts[1];
+        this.route = "/" + pathParts[2];
     }
 
     private void parseQueryParams(String query) {
@@ -71,6 +77,14 @@ public class HTTPRequest {
 
     public String getPath() {
         return this.path;
+    }
+
+    public String getResource() {
+        return this.resource;
+    }
+
+    public String getRoute() {
+        return this.route;
     }
 
     public String getQueryString() {

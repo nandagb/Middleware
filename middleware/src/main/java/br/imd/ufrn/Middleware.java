@@ -18,6 +18,7 @@ public class Middleware
     }
 
     public void start(int port) {
+        System.out.println("Middleware iniciado");
         Invoker invoker = new Invoker(lookup);
         TCPRequestHandler handler = new TCPRequestHandler(port, invoker);
         handler.start();

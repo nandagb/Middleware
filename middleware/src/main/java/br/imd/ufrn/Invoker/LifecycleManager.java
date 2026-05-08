@@ -87,10 +87,12 @@ public class LifecycleManager {
     public Object getInstance(Class<?> serviceClass) {
         Object remoteObject;
         if(serviceClass.isAnnotationPresent(Singleton.class)) {
+            System.out.println("pegando instâncias estática de serviço");
             //static instance
             remoteObject = getStaticInstance(serviceClass);
         }
         else {
+            System.out.println("pegando instância de pool");
             // per request with pooling
             remoteObject = getPoolInstance(serviceClass);
         }

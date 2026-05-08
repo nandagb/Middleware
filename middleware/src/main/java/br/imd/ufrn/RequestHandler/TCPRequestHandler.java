@@ -42,6 +42,7 @@ public class TCPRequestHandler {
     }
 
     public void start() {
+        System.out.println("Handler iniciado");
         try {
             this.serverSocket = new ServerSocket(this.port);
 
