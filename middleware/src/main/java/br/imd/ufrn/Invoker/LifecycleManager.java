@@ -99,5 +99,18 @@ public class LifecycleManager {
 
         return remoteObject;
     }
+
+    public void releaseInstance(Class<?> serviceClass, Object instance) {
+        if(serviceClass.isAnnotationPresent(Singleton.class)) {
+            return;
+        }
+        else {
+            Queue<Object> pool = pools.get(serviceClass);
+
+            if(pool != null) {
+                pool.offer(instance);
+            }
+        }
+    }
     
 }

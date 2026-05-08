@@ -35,6 +35,8 @@ public class Invoker {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        lifecycleManager.releaseInstance(serviceClass, remoteObject);
     }
     
 }
