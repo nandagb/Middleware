@@ -51,9 +51,11 @@ public class HTTPRequest {
     }
 
     private void parseQueryParams(String query) {
+        System.out.println("string query: " + query);
         String[] params = query.split("&");
 
         for (String param : params) {
+            System.out.println("param inside parse: " + param);
             String[] keyValue = param.split("=", 2);
 
             String key = keyValue[0];
@@ -65,6 +67,12 @@ public class HTTPRequest {
 
     public Map<String, String> getQueryParams() {
         return this.queryParams;
+    }
+
+    public String getQueryParam(String paramName) {
+        String paramValue = this.queryParams.get(paramName);
+        System.out.println("paramValue: " + paramValue);
+        return paramValue;
     }
 
     public String getRequestLine() {

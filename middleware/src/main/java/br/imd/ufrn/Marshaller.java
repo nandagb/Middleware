@@ -1,0 +1,93 @@
+package br.imd.ufrn;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.imd.ufrn.Annotations.Body;
+import br.imd.ufrn.Annotations.Param;
+import br.imd.ufrn.HTTP.HTTPRequest;
+
+public class Marshaller {
+    private ObjectMapper objectMapper;
+
+    public Marshaller() {
+        this.objectMapper = new ObjectMapper();
+    }
+
+    public Object[] unmarshallRequestParams(Method method, HTTPRequest request) {
+        Parameter[] methodParameters = method.getParameters();
+        Object[] args = new Object[methodParameters.length];
+        
+        System.out.println("Method parameters lenght: " + methodParameters.length);
+        for(int i=0; i < methodParameters.length; i++) {
+            Parameter methodParameter = methodParameters[i];
+            if (methodParameter.isAnnotationPresent(Param.class)) {
+                Param annotation = methodParameter.getAnnotation(Param.class);
+                String paramName = annotation.value();
+                System.out.println("paramName: " + paramName);
+                Class<?> type = methodParameter.getType();
+                String valueString = request.getQueryParam(paramName);
+                args[i] = getObjectValue(valueString, type);
+            }
+            else if (methodParameter.isAnnotationPresent(Body.class)){
+                String body = request.getBody();
+                Class<?> type = methodParameter.getType();
+                try {
+                    args[i] = objectMapper.readValue(body, type);
+                } catch (JsonMappingException e) {
+                    System.out.println("Erro ao converter objeto JSON em Objeto Java: JsonMappingException");
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (JsonProcessingException e) {
+                    System.out.println("Erro ao converter objeto JSON em Objeto Java: JsonProcessingException");
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+        return args;
+    }
+
+    public String marshallBody(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Erro ao converter objeto em string JSON: JsonProcessingException");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Object getObjectValue(String value, Class<?> type) {
+        if (type == int.class ||
+            type == Integer.class) {
+
+            return Integer.parseInt(value);
+        }
+
+        if (type == double.class ||
+            type == Double.class) {
+
+            return Double.parseDouble(value);
+        }
+
+        if (type == boolean.class ||
+            type == Boolean.class) {
+
+            return Boolean.parseBoolean(value);
+        }
+
+        if (type == String.class) {
+            return value;
+        }
+
+        return null;
+    }
+    
+}

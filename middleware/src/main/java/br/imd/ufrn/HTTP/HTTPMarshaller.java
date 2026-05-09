@@ -35,4 +35,27 @@ public class HTTPMarshaller {
             return null;
         }
     }
+
+    public HTTPResponse getServiceResponse(String responseBody){
+	  	String protocol = "HTTP/1.1";
+	  	// int code = serviceResponse.getStatusCode();
+        int code = 200;
+	  	String status = HTTPUtils.mapStatus(code);
+	  	String contentType = "application/json";
+	  	String body = responseBody;
+	  	int contentLength = body.length();
+	  	StringBuilder headersBuilder = new StringBuilder();
+		
+	  	headersBuilder.append(protocol + " " + code + " " + status).append("\r\n");
+	  	HTTPResponse response = new HTTPResponse(protocol, code, status);
+
+	  	headersBuilder.append("Content-Type: " + contentType).append("\r\n");
+	  	headersBuilder.append("Content-Length: " + contentLength).append("\r\n");
+
+	  	response.setHeaders(headersBuilder.toString());
+	  	response.setContentLength(contentLength);
+	  	response.setBody(body);
+
+	  	return response;
+   }
 }

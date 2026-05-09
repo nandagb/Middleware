@@ -2,9 +2,11 @@ package br.imd.ufrn.Invoker;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 
 import br.imd.ufrn.Annotations.Get;
+import br.imd.ufrn.Annotations.Param;
 import br.imd.ufrn.Annotations.RemoteService;
 
 public class LookupService {
