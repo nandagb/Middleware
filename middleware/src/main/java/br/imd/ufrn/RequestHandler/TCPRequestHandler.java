@@ -25,6 +25,26 @@ public class TCPRequestHandler {
         this.invoker = invoker;
     }
 
+    public void handleRequestHandlerError(Socket connection, int code, String message) {
+        HTTPResponse response = marshaller.getHTTPResponse(message, code);
+
+        try {
+            PrintWriter gatewayResponse = new PrintWriter(connection.getOutputStream());
+
+            gatewayResponse.println(response.getStatusLine());
+            gatewayResponse.println(response.getHeaders());
+
+            if (response.getContentLength() > 0 ) {
+                System.out.println("Erro retornado ao cliente: código: " + code  + "\n mensagem: " + response.getBody());
+                gatewayResponse.print(response.getBody());
+            }
+
+            gatewayResponse.flush();
+        } catch (IOException e) {
+            System.out.println("Erro! Não foi possível retornar o erro para o cliente: código: " + code + "\n mensagem: " + message);
+        }
+    }
+
     private void processRequest(Socket connection) {
         System.out.println("Conexão aceita!");
         
@@ -32,64 +52,77 @@ public class TCPRequestHandler {
         PrintWriter serverResponse = null;
 
         try {
-            clientRequest = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        } catch (IOException e) {
-            System.out.println("Erro ao ler a mensagem do cliente: IOException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
+
+            try {
+                clientRequest = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            } catch (IOException e) {
+                handleRequestHandlerError(connection, 400, "{\"error\": \"BadRequest: Não foi possível ler a mensagem do cliente!\"}");
+                return;
+            }
+
+            HTTPRequest request = this.marshaller.getHTTPRequest(clientRequest);
+
+            if (request == null) {
+                handleRequestHandlerError(connection, 400, "{\"error\": \"BadRequest: Não foi possível processar a requisição!\"}");
+                return;
+            }
+
+            System.out.println("Requisição recebida " + request.toString());
+            String responseBody = invoker.invoke(request);
+
+            HTTPResponse response = marshaller.getServiceResponse(responseBody);
+            // ================================================================
+
+            if (response == null) {
+                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Não foi possível processar a resposta!\"}");
+                return;
+            }
+
+            try {
+                serverResponse = new PrintWriter(connection.getOutputStream());
+            } catch (IOException e) {
+                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: IOException: Não foi possível ler a resposta do servidor!\"}");
+                return;
+            }
+
+            serverResponse.println(response.getStatusLine());
+            serverResponse.println(response.getHeaders());
+
+            if (response.getContentLength() > 0 ) {
+                serverResponse.print(response.getBody());
+            }
+
+            serverResponse.flush();
+        } catch (Exception e) {
+            handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Houve algum problema desconhecido!\"}");
+        } finally {
+            try { connection.close(); } catch (Exception ignored) {}
+            try { if (clientRequest != null) clientRequest.close(); } catch (Exception ignored) {}
+            try { if (serverResponse != null) clientRequest.close(); } catch (Exception ignored) {}
         }
-
-        HTTPRequest request = this.marshaller.getHTTPRequest(clientRequest);
-
-        if (request == null) {
-            System.out.println("Não foi possível processar a requisição!");
-            return;
-        }
-
-        System.out.println("Requisição recebida " + request.toString());
-        String responseBody = invoker.invoke(request);
-
-        HTTPResponse response = marshaller.getServiceResponse(responseBody);
-        // ================================================================
-
-        if (response == null) {
-            System.out.println("Não foi possível processar a resposta!");
-            return;
-        }
-
-        try {
-            serverResponse = new PrintWriter(connection.getOutputStream());
-        } catch (IOException e) {
-            // e.printStackTrace();
-            return;
-        }
-
-        serverResponse.println(response.getStatusLine());
-        serverResponse.println(response.getHeaders());
-
-        if (response.getContentLength() > 0 ) {
-            serverResponse.print(response.getBody());
-        }
-
-        serverResponse.flush();
     }
 
     public void start() {
         System.out.println("Handler iniciado");
         try {
             this.serverSocket = new ServerSocket(this.port);
-
-            while(true) {
-                System.out.println("TCP Request Handler esperando conexão na porta " + this.port + "...");
-                Socket connection = serverSocket.accept();
-
-                processRequest(connection);
-            }
         } catch (IOException e) {
-            System.out.println("Erro ao criar o serverSocket do TCPRequestHandler");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("IOException: Erro ao criar o serverSocket do TCPRequestHandler");
+            return;
+        }
+
+        while(true) {
+            System.out.println("TCP Request Handler esperando conexão na porta " + this.port + "...");
+            Socket connection;
+
+            try {
+                connection = serverSocket.accept();
+            } catch (IOException e) {
+                System.out.println("IOException: Erro! Não foi possível aceitar a conexão TCP em TCPRequestHandler");
+                return;
+            }
+
+            processRequest(connection);
         }
     }
 }
