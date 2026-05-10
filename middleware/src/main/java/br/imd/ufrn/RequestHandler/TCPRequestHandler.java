@@ -99,7 +99,7 @@ public class TCPRequestHandler {
         } finally {
             try { connection.close(); } catch (Exception ignored) {}
             try { if (clientRequest != null) clientRequest.close(); } catch (Exception ignored) {}
-            try { if (serverResponse != null) clientRequest.close(); } catch (Exception ignored) {}
+            try { if (serverResponse != null) serverResponse.close(); } catch (Exception ignored) {}
         }
     }
 

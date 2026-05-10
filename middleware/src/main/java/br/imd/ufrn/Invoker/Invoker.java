@@ -61,6 +61,8 @@ public class Invoker {
             else {
                 return new ResponseMessage("InvocationTargetException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
             }
+        } catch (RemoteException e) {
+            return new ResponseMessage(e.getMessage(), e.getCode());
         } finally {
             lifecycleManager.releaseInstance(serviceClass, remoteObject);
         }

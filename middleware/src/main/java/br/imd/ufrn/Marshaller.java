@@ -40,9 +40,9 @@ public class Marshaller {
                 try {
                     args[i] = objectMapper.readValue(body, type);
                 } catch (JsonMappingException e) {
-                    throw new MarshalException("JsonMappingException: Erro ao converter objeto JSON em Objeto Java", 500);
+                    throw new MarshalException("JsonMappingException: Erro ao converter objeto JSON em Objeto Java", 400);
                 } catch (JsonProcessingException e) {
-                    throw new MarshalException("Erro ao converter objeto JSON em Objeto Java: JsonProcessingException", 500);
+                    throw new MarshalException("JsonProcessingException: Erro ao converter objeto JSON em Objeto Java", 400);
                 }
             }
         }
@@ -50,14 +50,11 @@ public class Marshaller {
         return args;
     }
 
-    public String marshallBody(Object object) {
+    public String marshallBody(Object object) throws MarshalException {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            System.out.println("Erro ao converter objeto em string JSON: JsonProcessingException");
-            e.printStackTrace();
-            return null;
+            throw new MarshalException("JsonProcessingException: Erro ao converter objeto em string JSON", 500);
         }
     }
 
