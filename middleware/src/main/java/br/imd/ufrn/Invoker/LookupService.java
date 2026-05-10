@@ -8,6 +8,7 @@ import java.util.HashMap;
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Annotations.Param;
 import br.imd.ufrn.Annotations.RemoteService;
+import br.imd.ufrn.Exceptions.LookupException;
 
 public class LookupService {
     public HashMap<String, Class<?>> remoteServices;
@@ -26,11 +27,16 @@ public class LookupService {
         }
     }
 
-    public Class<?> getServiceClass(String id){
-        return remoteServices.get(id);
+    public Class<?> getServiceClass(String id) throws LookupException {
+        Class<?> serviceClass = remoteServices.get(id);
+        
+        if (serviceClass == null) {
+            throw new LookupException("LookupException: Não foi possível encontrar o serviço com id " + id, 500);
+        }
+        return serviceClass;
     }
 
-    public Method getMethod(Class<?> serviceClass, String HTTPmethod,  String route) {
+    public Method getMethod(Class<?> serviceClass, String HTTPmethod,  String route) throws LookupException {
         for (Method method : serviceClass.getDeclaredMethods()) {
             if (methodExists(method, HTTPmethod, route)) {
                 System.out.println("Método anotado com " + HTTPmethod + ": " + method.getName());
@@ -38,7 +44,7 @@ public class LookupService {
             }
         }
 
-        return null;
+        throw new LookupException("LookupException: Não foi possível encontrar o método com a rota " + route , 500);
     }
 
     private boolean methodExists(Method method, String httpMethod, String methodRoute) {

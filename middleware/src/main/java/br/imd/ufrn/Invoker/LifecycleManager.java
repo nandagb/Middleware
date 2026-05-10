@@ -8,6 +8,7 @@ import java.util.Queue;
 
 import br.imd.ufrn.Annotations.RemoteService;
 import br.imd.ufrn.Annotations.Singleton;
+import br.imd.ufrn.Exceptions.LifecycleException;
 
 public class LifecycleManager {
     private Map<Class<?>, Queue<Object>> pools;
@@ -18,46 +19,28 @@ public class LifecycleManager {
         this.staticInstances = new HashMap();
     }
 
-    public Object createInstance(Class<?> serviceClass) {
+    public Object createInstance(Class<?> serviceClass) throws LifecycleException {
         Object remoteObject;
         try {
             remoteObject = serviceClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException e) {
-            System.out.println("Erro ao instanciar o objeto remoto " + serviceClass.getName() + ": InstantiationException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new LifecycleException("InstantiationException: Erro ao instanciar o objeto remoto " + serviceClass.getName(), 500);
         } catch (IllegalAccessException e) {
-            System.out.println("Erro ao instanciar o objeto remoto " + serviceClass.getName() + ": IllegalAccessException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new LifecycleException("IllegalAccessException: Erro ao instanciar o objeto remoto " + serviceClass.getName(), 500);
         } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao instanciar o objeto remoto " + serviceClass.getName() + ": IllegalArgumentException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new LifecycleException("IllegalArgumentException: Erro ao instanciar o objeto remoto " + serviceClass.getName(), 500);
         } catch (InvocationTargetException e) {
-            System.out.println("Erro ao instanciar o objeto remoto " + serviceClass.getName() + ": InvocationTargetException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new LifecycleException("InvocationTargetException: Erro ao instanciar o objeto remoto " + serviceClass.getName(), 500);
         } catch (NoSuchMethodException e) {
-            System.out.println("Erro ao instanciar o objeto remoto " + serviceClass.getName() + ": NoSuchMethodException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new LifecycleException("NoSuchMethodException: Erro ao instanciar o objeto remoto " + serviceClass.getName(), 500);
         } catch (SecurityException e) {
-            System.out.println("Erro ao instanciar o objeto remoto " + serviceClass.getName() + ": SecurityException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+            throw new LifecycleException("SecurityException: Erro ao instanciar o objeto remoto " + serviceClass.getName(), 500);
         }
 
         return remoteObject;
     }
 
-    public Object getStaticInstance(Class<?> serviceClass) {
+    public Object getStaticInstance(Class<?> serviceClass) throws LifecycleException {
         if(staticInstances.containsKey(serviceClass)) {
             return staticInstances.get(serviceClass);
         }
@@ -69,7 +52,7 @@ public class LifecycleManager {
         }
     }
 
-    public Object getPoolInstance(Class<?> serviceClass) {
+    public Object getPoolInstance(Class<?> serviceClass) throws LifecycleException {
         Queue<Object> pool = pools.get(serviceClass);
 
         if(pool == null) {
@@ -84,7 +67,7 @@ public class LifecycleManager {
         return createInstance(serviceClass);
     }
 
-    public Object getInstance(Class<?> serviceClass) {
+    public Object getInstance(Class<?> serviceClass) throws LifecycleException {
         Object remoteObject;
         if(serviceClass.isAnnotationPresent(Singleton.class)) {
             System.out.println("pegando instâncias estática de serviço");

@@ -5,8 +5,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 import br.imd.ufrn.Marshaller;
+import br.imd.ufrn.ResponseMessage;
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Annotations.RemoteService;
+import br.imd.ufrn.Exceptions.LifecycleException;
+import br.imd.ufrn.Exceptions.LookupException;
+import br.imd.ufrn.Exceptions.MarshalException;
+import br.imd.ufrn.Exceptions.RemoteException;
 import br.imd.ufrn.HTTP.HTTPRequest;
 
 public class Invoker {
@@ -20,32 +25,42 @@ public class Invoker {
         this.lookup = lookup;
     }
 
-    public String invoke(HTTPRequest request) {
+    public ResponseMessage invoke(HTTPRequest request) {
         String HTTPMethod = request.getMethod();
         String resource = request.getResource();
         String route = request.getRoute();
 
-        Class<?> serviceClass = lookup.getServiceClass(resource);
-        Object remoteObject = lifecycleManager.getInstance(serviceClass);
-        Method method = lookup.getMethod(serviceClass, HTTPMethod, route);
-
-        Object[] args = marshaller.unmarshallRequestParams(method, request);
-
+        Class<?> serviceClass;
+        Object remoteObject;
+        Method method;
+        Object[] args;
+        try {
+            serviceClass = lookup.getServiceClass(resource);
+            remoteObject = lifecycleManager.getInstance(serviceClass);
+            method = lookup.getMethod(serviceClass, HTTPMethod, route);
+            args = marshaller.unmarshallRequestParams(method, request);
+        } catch (RemoteException e) {
+            return new ResponseMessage(e.getMessage(), e.getCode());
+        }
 
         try {
             Object result = method.invoke(remoteObject, args);
             String parsedResult = marshaller.marshallBody(result);
-            return parsedResult;
+            return new ResponseMessage(parsedResult, 200);
         } catch (IllegalAccessException e) {
-            System.out.println("Erro ao invocar o método " + method.getName() + " da classe " + serviceClass.getName() + ": IllegalAccessException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return "Erro ao invocar o método " + method.getName() + " da classe " + serviceClass.getName() + ": IllegalAccessException";
+            return new ResponseMessage("IllegalAccessException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
         } catch (InvocationTargetException e) {
-            System.out.println("Erro ao invocar o método " + method.getName() + " da classe " + serviceClass.getName() + ": InvocationTargetException");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return "Erro ao invocar o método " + method.getName() + " da classe " + serviceClass.getName() + ": InvocationTargetException";
+            Throwable cause = e.getCause();
+
+            if(cause instanceof RemoteException) {
+
+                RemoteException remoteError = (RemoteException) cause;
+
+                return new ResponseMessage(remoteError.getMessage(), remoteError.getCode());
+            }
+            else {
+                return new ResponseMessage("InvocationTargetException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
+            }
         } finally {
             lifecycleManager.releaseInstance(serviceClass, remoteObject);
         }

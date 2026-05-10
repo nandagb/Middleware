@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import br.imd.ufrn.ResponseMessage;
 import br.imd.ufrn.HTTP.HTTPMarshaller;
 import br.imd.ufrn.HTTP.HTTPRequest;
 import br.imd.ufrn.HTTP.HTTPResponse;
@@ -68,9 +69,9 @@ public class TCPRequestHandler {
             }
 
             System.out.println("Requisição recebida " + request.toString());
-            String responseBody = invoker.invoke(request);
+            ResponseMessage responseMessage = invoker.invoke(request);
 
-            HTTPResponse response = marshaller.getServiceResponse(responseBody);
+            HTTPResponse response = marshaller.getHTTPResponse(responseMessage.getMessage(), responseMessage.getCode());
             // ================================================================
 
             if (response == null) {

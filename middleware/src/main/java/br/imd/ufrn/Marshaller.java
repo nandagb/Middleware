@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.imd.ufrn.Annotations.Body;
 import br.imd.ufrn.Annotations.Param;
+import br.imd.ufrn.Exceptions.MarshalException;
 import br.imd.ufrn.HTTP.HTTPRequest;
 
 public class Marshaller {
@@ -19,7 +20,7 @@ public class Marshaller {
         this.objectMapper = new ObjectMapper();
     }
 
-    public Object[] unmarshallRequestParams(Method method, HTTPRequest request) {
+    public Object[] unmarshallRequestParams(Method method, HTTPRequest request) throws MarshalException {
         Parameter[] methodParameters = method.getParameters();
         Object[] args = new Object[methodParameters.length];
         
@@ -29,7 +30,6 @@ public class Marshaller {
             if (methodParameter.isAnnotationPresent(Param.class)) {
                 Param annotation = methodParameter.getAnnotation(Param.class);
                 String paramName = annotation.value();
-                System.out.println("paramName: " + paramName);
                 Class<?> type = methodParameter.getType();
                 String valueString = request.getQueryParam(paramName);
                 args[i] = getObjectValue(valueString, type);
@@ -40,16 +40,13 @@ public class Marshaller {
                 try {
                     args[i] = objectMapper.readValue(body, type);
                 } catch (JsonMappingException e) {
-                    System.out.println("Erro ao converter objeto JSON em Objeto Java: JsonMappingException");
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new MarshalException("JsonMappingException: Erro ao converter objeto JSON em Objeto Java", 500);
                 } catch (JsonProcessingException e) {
-                    System.out.println("Erro ao converter objeto JSON em Objeto Java: JsonProcessingException");
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new MarshalException("Erro ao converter objeto JSON em Objeto Java: JsonProcessingException", 500);
                 }
             }
         }
+
         return args;
     }
 
