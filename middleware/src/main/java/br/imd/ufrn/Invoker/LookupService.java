@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Annotations.Param;
+import br.imd.ufrn.Annotations.Post;
 import br.imd.ufrn.Annotations.RemoteService;
 import br.imd.ufrn.Exceptions.LookupException;
 
@@ -53,6 +54,11 @@ public class LookupService {
             case "GET":
                 if (method.isAnnotationPresent(Get.class)) {
                     return method.getAnnotation(Get.class).value().equals(methodRoute);
+                }
+                break;
+            case "POST":
+                if (method.isAnnotationPresent(Post.class)) {
+                    return method.getAnnotation(Post.class).value().equals(methodRoute);
                 }
                 break;
         }

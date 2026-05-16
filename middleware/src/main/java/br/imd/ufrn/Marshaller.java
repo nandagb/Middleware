@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import br.imd.ufrn.Annotations.Body;
 import br.imd.ufrn.Annotations.Param;
@@ -35,7 +36,9 @@ public class Marshaller {
                 args[i] = getObjectValue(valueString, type);
             }
             else if (methodParameter.isAnnotationPresent(Body.class)){
+                System.out.println("Tem parametro Body");
                 String body = request.getBody();
+                System.out.println("body: " + body);
                 Class<?> type = methodParameter.getType();
                 try {
                     args[i] = objectMapper.readValue(body, type);

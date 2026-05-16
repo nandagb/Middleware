@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import br.imd.ufrn.ResponseMessage;
 import br.imd.ufrn.HTTP.HTTPMarshaller;
@@ -19,6 +21,7 @@ public class TCPRequestHandler {
     private ServerSocket serverSocket;
     private HTTPMarshaller marshaller;
     private Invoker invoker;
+    ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     public TCPRequestHandler(int port, Invoker invoker) {
         this.port = port;
@@ -97,9 +100,9 @@ public class TCPRequestHandler {
         } catch (Exception e) {
             handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Houve algum problema desconhecido!\"}");
         } finally {
-            try { connection.close(); } catch (Exception ignored) {}
             try { if (clientRequest != null) clientRequest.close(); } catch (Exception ignored) {}
             try { if (serverResponse != null) serverResponse.close(); } catch (Exception ignored) {}
+            try { connection.close(); } catch (Exception ignored) {}
         }
     }
 
@@ -123,7 +126,7 @@ public class TCPRequestHandler {
                 return;
             }
 
-            processRequest(connection);
+            executor.execute(() -> processRequest(connection)) ;
         }
     }
 }
