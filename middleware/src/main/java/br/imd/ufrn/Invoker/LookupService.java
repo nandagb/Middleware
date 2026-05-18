@@ -41,7 +41,7 @@ public class LookupService {
     public Method getMethod(Class<?> serviceClass, String HTTPmethod,  String route) throws LookupException {
         for (Method method : serviceClass.getDeclaredMethods()) {
             if (methodExists(method, HTTPmethod, route)) {
-                System.out.println("Método anotado com " + HTTPmethod + ": " + method.getName());
+                // System.out.println("Método anotado com " + HTTPmethod + ": " + method.getName());
                 return method;
             }
         }

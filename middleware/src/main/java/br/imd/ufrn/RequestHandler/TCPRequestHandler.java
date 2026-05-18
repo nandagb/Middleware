@@ -50,7 +50,7 @@ public class TCPRequestHandler {
     }
 
     private void processRequest(Socket connection) {
-        System.out.println("Conexão aceita!");
+        // System.out.println("Conexão aceita!");
         
         BufferedReader clientRequest = null;
         PrintWriter serverResponse = null;
@@ -71,7 +71,7 @@ public class TCPRequestHandler {
                 return;
             }
 
-            System.out.println("Requisição recebida " + request.toString());
+            // System.out.println("Requisição recebida " + request.toString());
             ResponseMessage responseMessage = invoker.invoke(request);
 
             HTTPResponse response = marshaller.getHTTPResponse(responseMessage.getMessage(), responseMessage.getCode());
@@ -116,7 +116,7 @@ public class TCPRequestHandler {
         }
 
         while(true) {
-            System.out.println("TCP Request Handler esperando conexão na porta " + this.port + "...");
+            // System.out.println("TCP Request Handler esperando conexão na porta " + this.port + "...");
             Socket connection;
 
             try {

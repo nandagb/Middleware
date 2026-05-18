@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Message Service 9005",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
+      "args": "9005 tcp"
+    },
+    {
+      "type": "java",
+      "name": "Message Service 9006",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
+      "args": "9006 tcp"
+    },
+    {
+      "type": "java",
+      "name": "User Service 9007",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
+      "args": "9007 tcp"
+    },
+    {
+      "type": "java",
+      "name": "User Service 9008",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
+      "args": "9008 tcp"
+    },
+    {
+      "type": "java",
+      "name": "Gateway",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.gateway.APIGatewayApplication",
+    //   "args": "9005 tcp"
+    }
+  ]
+}

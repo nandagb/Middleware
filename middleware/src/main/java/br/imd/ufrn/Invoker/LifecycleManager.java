@@ -70,7 +70,7 @@ public class LifecycleManager {
     public Object getInstance(Class<?> serviceClass) throws LifecycleException {
         Object remoteObject;
         if(serviceClass.isAnnotationPresent(Singleton.class)) {
-            System.out.println("pegando instâncias estática de serviço");
+            // System.out.println("pegando instâncias estática de serviço");
             //static instance
             remoteObject = getStaticInstance(serviceClass);
         }
