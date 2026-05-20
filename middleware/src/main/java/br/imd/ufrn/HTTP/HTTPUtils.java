@@ -8,6 +8,7 @@ public class HTTPUtils {
             case 400: return "Bad Request";
             case 404: return "Not Found";
             case 500: return "Internal Server Error";
+            case 502: return "Bad Gateway";
             case 503: return "Service Unavailable";
             default: return "Unknown";
         }

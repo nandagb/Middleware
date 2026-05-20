@@ -51,6 +51,7 @@ public class TCPRequestHandler {
 
     private void processRequest(Socket connection) {
         // System.out.println("Conexão aceita!");
+        System.out.println("INICIO REQUEST");
         
         BufferedReader clientRequest = null;
         PrintWriter serverResponse = null;
@@ -99,7 +100,9 @@ public class TCPRequestHandler {
             serverResponse.flush();
         } catch (Exception e) {
             handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Houve algum problema desconhecido!\"}");
-        } finally {
+        }
+         finally {
+            System.out.println("FIM REQUEST");
             try { if (clientRequest != null) clientRequest.close(); } catch (Exception ignored) {}
             try { if (serverResponse != null) serverResponse.close(); } catch (Exception ignored) {}
             try { connection.close(); } catch (Exception ignored) {}

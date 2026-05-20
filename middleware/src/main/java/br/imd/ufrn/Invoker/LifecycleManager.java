@@ -5,18 +5,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import br.imd.ufrn.Annotations.RemoteService;
 import br.imd.ufrn.Annotations.Singleton;
 import br.imd.ufrn.Exceptions.LifecycleException;
 
 public class LifecycleManager {
-    private Map<Class<?>, Queue<Object>> pools;
-    private Map<Class<?>, Object> staticInstances;
+    private ConcurrentHashMap<Class<?>, ConcurrentLinkedQueue<Object>> pools;
+    private ConcurrentHashMap<Class<?>, Object> staticInstances;
 
     public LifecycleManager () {
-        this.pools = new HashMap();
-        this.staticInstances = new HashMap();
+        this.pools = new ConcurrentHashMap();
+        this.staticInstances = new ConcurrentHashMap();
     }
 
     public Object createInstance(Class<?> serviceClass) throws LifecycleException {
@@ -40,11 +42,12 @@ public class LifecycleManager {
         return remoteObject;
     }
 
-    public Object getStaticInstance(Class<?> serviceClass) throws LifecycleException {
+    public synchronized Object getStaticInstance(Class<?> serviceClass) throws LifecycleException {
         if(staticInstances.containsKey(serviceClass)) {
             return staticInstances.get(serviceClass);
         }
         else {
+            // pode lançar exceção
             Object instance = createInstance(serviceClass);
             staticInstances.put(serviceClass, instance);
 
@@ -52,11 +55,11 @@ public class LifecycleManager {
         }
     }
 
-    public Object getPoolInstance(Class<?> serviceClass) throws LifecycleException {
-        Queue<Object> pool = pools.get(serviceClass);
+    public synchronized Object getPoolInstance(Class<?> serviceClass) throws LifecycleException {
+        ConcurrentLinkedQueue<Object> pool = pools.get(serviceClass);
 
         if(pool == null) {
-            pool = new LinkedList<>();
+            pool = new ConcurrentLinkedQueue<>();
             pools.put(serviceClass, pool);
         }
 

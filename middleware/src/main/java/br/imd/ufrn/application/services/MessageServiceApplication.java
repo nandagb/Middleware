@@ -48,20 +48,15 @@ public class MessageServiceApplication {
                     httpClient.send(req, HttpResponse.BodyHandlers.discarding());
                     System.out.println("heartBeat enviado!");
                 } catch (IOException e) {
-                    System.out.println("IOException: erro ao enviar HeartBeat do User Service");
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    System.out.println("IOException: erro ao enviar HeartBeat do Message Service: " + e);
                 } catch (InterruptedException e) {
-                    System.out.println("InterruptedException: erro ao enviar HeartBeat  do User Service");
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    System.out.println("InterruptedException: erro ao enviar HeartBeat  do Message Service: " + e);
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    System.out.println("InterruptedException: ao chamar sleep no UserService");
-                    e.printStackTrace();
+                    System.out.println("InterruptedException: ao chamar sleep no MessageService");
                 }
             }
     }

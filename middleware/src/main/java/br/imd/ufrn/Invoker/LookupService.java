@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Annotations.Param;
@@ -12,10 +13,10 @@ import br.imd.ufrn.Annotations.RemoteService;
 import br.imd.ufrn.Exceptions.LookupException;
 
 public class LookupService {
-    public HashMap<String, Class<?>> remoteServices;
+    public ConcurrentHashMap<String, Class<?>> remoteServices;
 
     public LookupService() {
-        remoteServices = new HashMap<>();
+        remoteServices = new ConcurrentHashMap<>();
     }
 
     public void register(Class<?> serviceClass) {

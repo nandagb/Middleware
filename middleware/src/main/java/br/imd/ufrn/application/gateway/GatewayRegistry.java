@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 import br.imd.ufrn.application.models.ServiceRecord;
 
 public class GatewayRegistry {
-    private ConcurrentHashMap<String, ServiceRecord> servicesTable;
-    AtomicInteger index = new AtomicInteger(0);
-    ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-    private int heartBeatTimeout = 5000;
-    private int failureDetectorInterval = 1000;
+    private final ConcurrentHashMap<String, ServiceRecord> servicesTable;
+    private final AtomicInteger index = new AtomicInteger(0);
+    // private final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+    private int heartBeatTimeout = 9000;
+    private int failureDetectorInterval = 3000;
 
     public GatewayRegistry() {
         servicesTable = new ConcurrentHashMap<>();
@@ -27,7 +27,7 @@ public class GatewayRegistry {
         while (true) {
             synchronized (servicesTable) {
                 for (HashMap.Entry<String, ServiceRecord> entry : servicesTable.entrySet()) {
-                    String key = entry.getKey();
+                    // String key = entry.getKey();
                     ServiceRecord service = entry.getValue();
 
                     if (System.currentTimeMillis() - service.getLastHeartbeat() > this.heartBeatTimeout && service.getStatus()) {
@@ -40,9 +40,7 @@ public class GatewayRegistry {
             try {
                 Thread.sleep(this.failureDetectorInterval);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 System.out.println("InterruptedException: erro ao chamar o sleep do failureDetector");
-                e.printStackTrace();
             }
 
         }
@@ -63,23 +61,20 @@ public class GatewayRegistry {
         return services.get(i);
     }
 
-    public void update(String key, ServiceRecord service) {
+    public synchronized void update(String key, ServiceRecord service) {
         // System.out.println("dentro de update: " + key + " service status: " + service.getStatus());
-        ServiceRecord tableService;
+        ServiceRecord tableService = servicesTable.get(key);
 
-        synchronized (servicesTable) {
-            tableService = servicesTable.get(key);
-
-            if (tableService == null) {
-                System.out.println("Servidor de porta: " + service.getPort() + " iniciado");
-                tableService = servicesTable.put(key, service);
-            }
-
-            if (!tableService.getStatus()) {
-                System.out.println("Servidor de porta: " + tableService.getPort() + " iniciado");
-            }
-
-            tableService.refreshHeartBeat();
+        if (tableService == null) {
+            System.out.println("Servidor de porta: " + service.getPort() + " iniciado");
+            servicesTable.put(key, service);
+            tableService = service;
         }
+
+        if (!tableService.getStatus()) {
+            System.out.println("Servidor de porta: " + tableService.getPort() + " iniciado");
+        }
+
+        tableService.refreshHeartBeat();
     }
 }

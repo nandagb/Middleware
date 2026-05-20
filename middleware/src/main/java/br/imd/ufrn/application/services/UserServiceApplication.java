@@ -51,19 +51,14 @@ public class UserServiceApplication {
                     System.out.println("heartBeat enviado!");
                 } catch (IOException e) {
                     System.out.println("IOException: erro ao enviar HeartBeat do User Service");
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 } catch (InterruptedException e) {
                     System.out.println("InterruptedException: erro ao enviar HeartBeat  do User Service");
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     System.out.println("InterruptedException: ao chamar sleep no UserService");
-                    e.printStackTrace();
                 }
             }
     }
