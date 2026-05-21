@@ -2,6 +2,7 @@ package br.imd.ufrn.HTTP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 public class HTTPMarshaller {
@@ -13,12 +14,15 @@ public class HTTPMarshaller {
 
         try {
             requestLine = clientRequest.readLine();
+            if (requestLine == null) {
+                return null;
+            }
             HTTPRequest request = new HTTPRequest(requestLine);
 
             String line;
             while ((line = clientRequest.readLine()) != null && !line.isEmpty()) {
                 headersBuilder.append(line).append("\r\n");
-                if (line.startsWith("Content-Length:")) {
+                if (line.toLowerCase().startsWith("content-length:")) {
                     request.setContentLength(line);
                 }
             }
@@ -53,16 +57,20 @@ public class HTTPMarshaller {
             }
 
             return request;
-
+        } catch (SocketTimeoutException e) {
+            System.out.println("SocketTimeoutException: Erro de Timeout na requisição: " + e);
+            return null;
         } catch (IOException e) {
-            System.out.println("Erro ao criar requisição HTTP a partir do BufferedReader");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("IOException: Erro ao criar requisição HTTP a partir do BufferedReader: " + e);
             return null;
         }
     }
 
-    public HTTPResponse getHTTPResponse(String responseBody, int code){
+    public HTTPResponse getHTTPResponse(String responseBody, int code) {
+        return getHTTPResponse(responseBody, code, false);
+    }
+
+    public HTTPResponse getHTTPResponse(String responseBody, int code, boolean keepAlive) {
 	  	String status = HTTPUtils.mapStatus(code);
 	  	String contentType = "application/json";
 	  	String body = responseBody;
@@ -74,7 +82,7 @@ public class HTTPMarshaller {
 	  	headersBuilder.append(this.protocol + " " + code + " " + status).append("\r\n");
 	  	HTTPResponse response = new HTTPResponse(this.protocol, code, status);
 
-	  	headersBuilder.append("Connection: close").append("\r\n");
+	  	headersBuilder.append("Connection: " + (keepAlive ? "keep-alive" : "close")).append("\r\n");
         headersBuilder.append("Host: localhost").append("\r\n");
         headersBuilder.append("Content-Type: " + contentType).append("\r\n");
 	  	headersBuilder.append("Content-Length: " + contentLength).append("\r\n");

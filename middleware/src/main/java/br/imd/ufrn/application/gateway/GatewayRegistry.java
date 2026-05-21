@@ -33,6 +33,8 @@ public class GatewayRegistry {
                     if (System.currentTimeMillis() - service.getLastHeartbeat() > this.heartBeatTimeout && service.getStatus()) {
                         System.out.println("Servidor de porta: " + service.getPort() + " morreu");
                         service.setStatus(false);
+                        // Remove dead service from registry
+                        // servicesTable.remove(entry.getKey());
                     }
                 }
             }
@@ -77,4 +79,9 @@ public class GatewayRegistry {
 
         tableService.refreshHeartBeat();
     }
+    public void remove(int port) {
+        // Remove service entries matching the given port
+        servicesTable.entrySet().removeIf(entry -> entry.getValue().getPort() == port);
+    }
 }
+

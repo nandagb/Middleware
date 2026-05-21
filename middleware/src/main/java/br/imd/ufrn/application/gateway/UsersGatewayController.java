@@ -45,6 +45,7 @@ public class UsersGatewayController {
         try {
             address = InetAddress.getByName(stringAddress);
         } catch (UnknownHostException e) {
+            System.out.println("Erro para inicializar o endereço no listenHearBeat do UsersGateway: " + e);
             return;
         }
 
@@ -55,7 +56,7 @@ public class UsersGatewayController {
 
     @Post("/create")
     public User create(@Body User user) throws Exception {
-        System.out.println("Executando o create dentro do gateway");
+        System.out.println("Executando o create dentro do Users gateway");
         // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
         String body;
         try {
@@ -94,7 +95,7 @@ public class UsersGatewayController {
             return responseUser;
         } catch (Exception e) {
             throw new RemoteException(
-                "UserService Gateway error: Erro ao comunicar com MessageService",
+                "UserService Gateway error: Erro ao comunicar com MessageService " + e,
                 502
             );
         }

@@ -51,12 +51,14 @@ public class TCPRequestHandler {
 
     private void processRequest(Socket connection) {
         // System.out.println("Conexão aceita!");
-        System.out.println("INICIO REQUEST");
+        // System.out.println("INICIO CONEXÃO");
         
         BufferedReader clientRequest = null;
         PrintWriter serverResponse = null;
 
         try {
+            // Set 5 seconds idle timeout so inactive connections are closed
+            connection.setSoTimeout(5000);
 
             try {
                 clientRequest = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -65,44 +67,56 @@ public class TCPRequestHandler {
                 return;
             }
 
-            HTTPRequest request = this.marshaller.getHTTPRequest(clientRequest);
-
-            if (request == null) {
-                handleRequestHandlerError(connection, 400, "{\"error\": \"BadRequest: Não foi possível processar a requisição!\"}");
-                return;
-            }
-
-            // System.out.println("Requisição recebida " + request.toString());
-            ResponseMessage responseMessage = invoker.invoke(request);
-
-            HTTPResponse response = marshaller.getHTTPResponse(responseMessage.getMessage(), responseMessage.getCode());
-            // ================================================================
-
-            if (response == null) {
-                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Não foi possível processar a resposta!\"}");
-                return;
-            }
-
             try {
                 serverResponse = new PrintWriter(connection.getOutputStream());
             } catch (IOException e) {
-                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: IOException: Não foi possível ler a resposta do servidor!\"}");
+                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: IOException: Não foi possível obter o output stream do servidor!\"}");
                 return;
             }
 
-            serverResponse.println(response.getStatusLine());
-            serverResponse.println(response.getHeaders());
+            while (true) {
+                HTTPRequest request = this.marshaller.getHTTPRequest(clientRequest);
 
-            if (response.getContentLength() > 0 ) {
-                serverResponse.print(response.getBody());
+                if (request == null) {
+                    // Connection closed by client or EOF reached
+                    break;
+                }
+
+                System.out.println("received request\n" + request.toString());
+
+                // Process the request
+                ResponseMessage responseMessage = invoker.invoke(request);
+
+                // Determine if we should keep connection alive (HTTP/1.1 is keep-alive by default)
+                String connectionHeader = request.getHeader("Connection");
+                boolean keepAlive = true;
+                if (connectionHeader != null && connectionHeader.equalsIgnoreCase("close")) {
+                    keepAlive = false;
+                }
+
+                HTTPResponse response = marshaller.getHTTPResponse(responseMessage.getMessage(), responseMessage.getCode(), keepAlive);
+
+                if (response == null) {
+                    handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Não foi possível processar a resposta!\"}");
+                    break;
+                }
+
+                serverResponse.println(response.getStatusLine());
+                serverResponse.println(response.getHeaders());
+
+                if (response.getContentLength() > 0 ) {
+                    serverResponse.print(response.getBody());
+                }
+
+                serverResponse.flush();
+                if (!keepAlive) {
+                    break;
+                }
             }
-
-            serverResponse.flush();
         } catch (Exception e) {
             handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Houve algum problema desconhecido!\"}");
         }
          finally {
-            System.out.println("FIM REQUEST");
             try { if (clientRequest != null) clientRequest.close(); } catch (Exception ignored) {}
             try { if (serverResponse != null) serverResponse.close(); } catch (Exception ignored) {}
             try { connection.close(); } catch (Exception ignored) {}

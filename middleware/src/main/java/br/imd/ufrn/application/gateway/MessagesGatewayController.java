@@ -45,7 +45,7 @@ public class MessagesGatewayController {
         try {
             address = InetAddress.getByName(stringAddress);
         } catch (UnknownHostException e) {
-            System.out.println("Erro para inicializar o endereço no listenHearBeat do MessagesGateway");
+            System.out.println("Erro para inicializar o endereço no listenHearBeat do MessagesGateway: " + e);
             return;
         }
 
@@ -56,7 +56,7 @@ public class MessagesGatewayController {
 
     @Post("/send")
     public Message send(@Body Message message) throws Exception {
-        // System.out.println("Executando o send dentro do gateway");
+        System.out.println("Executando o send dentro do Messages gateway");
         // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
         String body;
         try {
@@ -89,13 +89,12 @@ public class MessagesGatewayController {
         try {
             HttpResponse<String> res = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
-            // System.out.println("Resposta recebida do Message Service: " + res.body());
-
             Message responseMessage = objectMapper.readValue(res.body(), Message.class);
+
             return responseMessage;
         } catch (Exception e) {
             throw new RemoteException(
-                "MessageService Gateway error: Erro ao comunicar com MessageService",
+                "MessageService Gateway error: Erro ao comunicar com UserService " + e,
                 502
             );
         }

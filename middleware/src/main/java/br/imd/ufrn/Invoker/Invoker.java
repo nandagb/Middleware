@@ -40,6 +40,7 @@ public class Invoker {
             method = lookup.getMethod(serviceClass, HTTPMethod, route);
             args = marshaller.unmarshallRequestParams(method, request);
         } catch (RemoteException e) {
+            System.out.println("RemoteException: " + e.getCode() + " " + e.getMessage());
             return new ResponseMessage(e.getMessage(), e.getCode());
         }
 
@@ -48,20 +49,25 @@ public class Invoker {
             String parsedResult = marshaller.marshallBody(result);
             return new ResponseMessage(parsedResult, 200);
         } catch (IllegalAccessException e) {
+            System.out.println("IllegalAccessException: " + e);
             return new ResponseMessage("IllegalAccessException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
         } catch (InvocationTargetException e) {
+            System.out.println("InvocationTargetException!");
             Throwable cause = e.getCause();
 
             if(cause instanceof RemoteException) {
 
                 RemoteException remoteError = (RemoteException) cause;
 
+                System.out.println("RemoteException from InvocationTargetException: " + remoteError.getCode() + " " + remoteError.getMessage());
                 return new ResponseMessage(remoteError.getMessage(), remoteError.getCode());
             }
             else {
+                System.out.println("InvocationTargetException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente");
                 return new ResponseMessage("InvocationTargetException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
             }
         } catch (RemoteException e) {
+            System.out.println("RemoteException: " + e);
             return new ResponseMessage(e.getMessage(), e.getCode());
         } finally {
             lifecycleManager.releaseInstance(serviceClass, remoteObject);
