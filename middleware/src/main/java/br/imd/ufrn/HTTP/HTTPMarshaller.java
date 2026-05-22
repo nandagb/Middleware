@@ -30,9 +30,9 @@ public class HTTPMarshaller {
             request.setHeaders(headersBuilder.toString());
 
             // if (request.getContentLength() > 0) {
-            //     char[] body = new char[request.getContentLength()];
-            //     clientRequest.read(body, 0, request.getContentLength());
-            //     request.setBody(body);
+            // char[] body = new char[request.getContentLength()];
+            // clientRequest.read(body, 0, request.getContentLength());
+            // request.setBody(body);
             // }
 
             if (request.getContentLength() > 0) {
@@ -41,10 +41,9 @@ public class HTTPMarshaller {
 
                 while (totalRead < request.getContentLength()) {
                     int read = clientRequest.read(
-                        body,
-                        totalRead,
-                        request.getContentLength() - totalRead
-                    );
+                            body,
+                            totalRead,
+                            request.getContentLength() - totalRead);
 
                     if (read == -1) {
                         break;
@@ -71,47 +70,47 @@ public class HTTPMarshaller {
     }
 
     public HTTPResponse getHTTPResponse(String responseBody, int code, boolean keepAlive) {
-	  	String status = HTTPUtils.mapStatus(code);
-	  	String contentType = "application/json";
-	  	String body = responseBody;
-	  	int contentLength = body.length();
+        String status = HTTPUtils.mapStatus(code);
+        String contentType = "application/json";
+        String body = responseBody;
+        int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
         // int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
 
-	  	StringBuilder headersBuilder = new StringBuilder();
-		
-	  	headersBuilder.append(this.protocol + " " + code + " " + status).append("\r\n");
-	  	HTTPResponse response = new HTTPResponse(this.protocol, code, status);
+        StringBuilder headersBuilder = new StringBuilder();
 
-	  	headersBuilder.append("Connection: " + (keepAlive ? "keep-alive" : "close")).append("\r\n");
+        headersBuilder.append(this.protocol + " " + code + " " + status).append("\r\n");
+        HTTPResponse response = new HTTPResponse(this.protocol, code, status);
+
+        headersBuilder.append("Connection: " + (keepAlive ? "keep-alive" : "close")).append("\r\n");
         headersBuilder.append("Host: localhost").append("\r\n");
         headersBuilder.append("Content-Type: " + contentType).append("\r\n");
-	  	headersBuilder.append("Content-Length: " + contentLength).append("\r\n");
+        headersBuilder.append("Content-Length: " + contentLength).append("\r\n");
 
-	  	response.setHeaders(headersBuilder.toString());
-	  	response.setContentLength(contentLength);
-	  	response.setBody(body);
+        response.setHeaders(headersBuilder.toString());
+        response.setContentLength(contentLength);
+        response.setBody(body);
 
-	  	return response;
-   }
+        return response;
+    }
 
-    public HTTPResponse getServiceResponse(String responseBody){
+    public HTTPResponse getServiceResponse(String responseBody) {
         int code = 200;
-	  	String status = HTTPUtils.mapStatus(code);
-	  	String contentType = "application/json";
-	  	String body = responseBody;
-	  	int contentLength = body.length();
-	  	StringBuilder headersBuilder = new StringBuilder();
-		
-	  	headersBuilder.append(this.protocol + " " + code + " " + status).append("\r\n");
-	  	HTTPResponse response = new HTTPResponse(this.protocol, code, status);
+        String status = HTTPUtils.mapStatus(code);
+        String contentType = "application/json";
+        String body = responseBody;
+        int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
+        StringBuilder headersBuilder = new StringBuilder();
 
-	  	headersBuilder.append("Content-Type: " + contentType).append("\r\n");
-	  	headersBuilder.append("Content-Length: " + contentLength).append("\r\n");
+        headersBuilder.append(this.protocol + " " + code + " " + status).append("\r\n");
+        HTTPResponse response = new HTTPResponse(this.protocol, code, status);
 
-	  	response.setHeaders(headersBuilder.toString());
-	  	response.setContentLength(contentLength);
-	  	response.setBody(body);
+        headersBuilder.append("Content-Type: " + contentType).append("\r\n");
+        headersBuilder.append("Content-Length: " + contentLength).append("\r\n");
 
-	  	return response;
-   }
+        response.setHeaders(headersBuilder.toString());
+        response.setContentLength(contentLength);
+        response.setBody(body);
+
+        return response;
+    }
 }
