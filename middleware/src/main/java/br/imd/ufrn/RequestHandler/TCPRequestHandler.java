@@ -14,9 +14,8 @@ import br.imd.ufrn.HTTP.HTTPMarshaller;
 import br.imd.ufrn.HTTP.HTTPRequest;
 import br.imd.ufrn.HTTP.HTTPResponse;
 import br.imd.ufrn.Invoker.Invoker;
-import br.imd.ufrn.Invoker.LookupService;
 
-public class TCPRequestHandler {
+public class TCPRequestHandler implements RequestHandler{
     int port;
     private ServerSocket serverSocket;
     private HTTPMarshaller marshaller;
@@ -52,7 +51,7 @@ public class TCPRequestHandler {
     private void processRequest(Socket connection) {
         // System.out.println("Conexão aceita!");
         // System.out.println("INICIO CONEXÃO");
-        
+
         BufferedReader clientRequest = null;
         PrintWriter serverResponse = null;
 
@@ -123,6 +122,7 @@ public class TCPRequestHandler {
         }
     }
 
+    @Override
     public void start() {
         System.out.println("Handler iniciado");
         try {

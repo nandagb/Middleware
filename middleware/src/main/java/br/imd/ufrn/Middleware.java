@@ -8,6 +8,8 @@ import java.net.Socket;
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Invoker.Invoker;
 import br.imd.ufrn.Invoker.LookupService;
+import br.imd.ufrn.RequestHandler.RequestHandler;
+import br.imd.ufrn.RequestHandler.RequestHandlerFactory;
 import br.imd.ufrn.RequestHandler.TCPRequestHandler;
 
 public class Middleware 
@@ -20,7 +22,7 @@ public class Middleware
     public void start(int port, String protocol) {
         System.out.println("Middleware iniciado");
         Invoker invoker = new Invoker(lookup);
-        TCPRequestHandler handler = new TCPRequestHandler(port, invoker);
+        RequestHandler handler = RequestHandlerFactory.createHandler(protocol, port, invoker);
         handler.start();
     }
 
