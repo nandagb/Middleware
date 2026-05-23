@@ -34,7 +34,7 @@
       "name": "Gateway",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.gateway.APIGatewayApplication",
-    //   "args": "9005 tcp"
+      "args": "8080 tcp"
     }
   ]
 }

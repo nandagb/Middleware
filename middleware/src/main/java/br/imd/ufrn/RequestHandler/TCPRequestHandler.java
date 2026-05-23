@@ -77,16 +77,14 @@ public class TCPRequestHandler implements RequestHandler{
                 HTTPRequest request = this.marshaller.getHTTPRequest(clientRequest);
 
                 if (request == null) {
-                    // Connection closed by client or EOF reached
                     break;
                 }
 
-                System.out.println("received request\n" + request.toString());
+                System.out.println("Requisição TCP com HTTP recebida\n" + request.toString());
 
-                // Process the request
                 ResponseMessage responseMessage = invoker.invoke(request);
 
-                // Determine if we should keep connection alive (HTTP/1.1 is keep-alive by default)
+                // Determinar se a requisição deve manter keep alive (HTTP/1.1 é keep-alive por padrão)
                 String connectionHeader = request.getHeader("Connection");
                 boolean keepAlive = true;
                 if (connectionHeader != null && connectionHeader.equalsIgnoreCase("close")) {
