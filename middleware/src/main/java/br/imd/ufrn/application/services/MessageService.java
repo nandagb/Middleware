@@ -17,7 +17,7 @@ public class MessageService {
             
             System.out.println("Executando o send dentro do MessageService");
 
-            System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
+            System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteudo=" + content);
 
             // Aqui: persistência
             message.setId(1);

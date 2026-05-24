@@ -39,13 +39,13 @@ public class TCPRequestHandler {
             gatewayResponse.println(response.getHeaders());
 
             if (response.getContentLength() > 0 ) {
-                System.out.println("Erro retornado ao cliente: código: " + code  + "\n mensagem: " + response.getBody());
+                System.out.println("Erro retornado ao cliente: codigo: " + code  + "\n mensagem: " + response.getBody());
                 gatewayResponse.print(response.getBody());
             }
 
             gatewayResponse.flush();
         } catch (IOException e) {
-            System.out.println("Erro! Não foi possível retornar o erro para o cliente: código: " + code + "\n mensagem: " + message);
+            System.out.println("Erro! Nao foi possivel retornar o erro para o cliente: codigo: " + code + "\n mensagem: " + message);
         }
     }
 
@@ -63,14 +63,14 @@ public class TCPRequestHandler {
             try {
                 clientRequest = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             } catch (IOException e) {
-                handleRequestHandlerError(connection, 400, "{\"error\": \"BadRequest: Não foi possível ler a mensagem do cliente!\"}");
+                handleRequestHandlerError(connection, 400, "{\"error\": \"BadRequest: Nao foi possivel ler a mensagem do cliente!\"}");
                 return;
             }
 
             try {
                 serverResponse = new PrintWriter(connection.getOutputStream());
             } catch (IOException e) {
-                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: IOException: Não foi possível obter o output stream do servidor!\"}");
+                handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: IOException: Nao foi possivel obter o output stream do servidor!\"}");
                 return;
             }
 
@@ -97,7 +97,7 @@ public class TCPRequestHandler {
                 HTTPResponse response = marshaller.getHTTPResponse(responseMessage.getMessage(), responseMessage.getCode(), keepAlive);
 
                 if (response == null) {
-                    handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Não foi possível processar a resposta!\"}");
+                    handleRequestHandlerError(connection, 500, "{\"error\": \"InternalServerError: Nao foi possivel processar a resposta!\"}");
                     break;
                 }
 
@@ -133,13 +133,13 @@ public class TCPRequestHandler {
         }
 
         while(true) {
-            // System.out.println("TCP Request Handler esperando conexão na porta " + this.port + "...");
+            // System.out.println("TCP Request Handler esperando conexao na porta " + this.port + "...");
             Socket connection;
 
             try {
                 connection = serverSocket.accept();
             } catch (IOException e) {
-                System.out.println("IOException: Erro! Não foi possível aceitar a conexão TCP em TCPRequestHandler");
+                System.out.println("IOException: Erro! Nao foi possivel aceitar a conexao TCP em TCPRequestHandler");
                 return;
             }
 

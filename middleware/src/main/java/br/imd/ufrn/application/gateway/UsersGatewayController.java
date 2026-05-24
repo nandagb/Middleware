@@ -47,7 +47,7 @@ public class UsersGatewayController {
         try {
             address = InetAddress.getByName(stringAddress);
         } catch (UnknownHostException e) {
-            System.out.println("Erro para inicializar o endereço no listenHearBeat do UsersGateway: " + e);
+            System.out.println("Erro para inicializar o endereco no listenHearBeat do UsersGateway: " + e);
             return;
         }
 
@@ -59,13 +59,13 @@ public class UsersGatewayController {
     @Post("/create")
     public User create(@Body User user) throws Exception {
         System.out.println("Executando o create dentro do Users gateway, com protocolo: " + this.protocol);
-        // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
+        // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteudo=" + content);
         String body;
         try {
             body = objectMapper.writeValueAsString(user);
         } catch (JsonProcessingException e) {
             throw new RemoteException(
-                "UserService Gateway error: Erro interno ao processar requisição",
+                "UserService Gateway error: Erro interno ao processar requisicao",
                 500
             );
         }
@@ -73,14 +73,14 @@ public class UsersGatewayController {
         ServiceRecord service = this.registry.getNextService();
 
         if (service == null) {
-            System.out.println("UserService Gateway error:  Não há servidores disponíveis!");
+            System.out.println("UserService Gateway error:  Nao ha servidores disponiveis!");
             throw new RemoteException(
-                "UserService Gateway error:  Não há servidores disponíveis!",
+                "UserService Gateway error:  Nao ha servidores disponiveis!",
                 503
             );
         }
 
-        System.out.println("Enviando requisição para porta: " + service.getPort());
+        System.out.println("Enviando requisicao para porta: " + service.getPort());
 
         HttpRequest req = HttpRequest.newBuilder()
             .uri(URI.create("http://" + "127.0.0.1" + ":" + service.getPort() + "/users/create"))

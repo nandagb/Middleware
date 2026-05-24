@@ -58,10 +58,10 @@ public class HTTPMarshaller {
 
             return request;
         } catch (SocketTimeoutException e) {
-            System.out.println("SocketTimeoutException: Erro de Timeout na requisição: " + e);
+            System.out.println("SocketTimeoutException: Erro de Timeout na requisicao: " + e);
             return null;
         } catch (IOException e) {
-            System.out.println("IOException: Erro ao criar requisição HTTP a partir do BufferedReader: " + e);
+            System.out.println("IOException: Erro ao criar requisicao HTTP a partir do BufferedReader: " + e);
             return null;
         }
     }

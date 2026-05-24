@@ -50,7 +50,7 @@ public class Invoker {
             return new ResponseMessage(parsedResult, 200);
         } catch (IllegalAccessException e) {
             System.out.println("IllegalAccessException: " + e);
-            return new ResponseMessage("IllegalAccessException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
+            return new ResponseMessage("IllegalAccessException: Nao foi possivel invocar o metodo" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
         } catch (InvocationTargetException e) {
             System.out.println("InvocationTargetException!");
             Throwable cause = e.getCause();
@@ -63,8 +63,8 @@ public class Invoker {
                 return new ResponseMessage(remoteError.getMessage(), remoteError.getCode());
             }
             else {
-                System.out.println("InvocationTargetException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente");
-                return new ResponseMessage("InvocationTargetException: Não foi possível invocar o método" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
+                System.out.println("InvocationTargetException: Nao foi possivel invocar o metodo" + method.getName() + " da classe " + serviceClass.getName() + " remotamente");
+                return new ResponseMessage("InvocationTargetException: Nao foi possivel invocar o metodo" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
             }
         } catch (RemoteException e) {
             System.out.println("RemoteException: " + e);

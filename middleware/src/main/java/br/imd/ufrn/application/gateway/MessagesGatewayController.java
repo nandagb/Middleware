@@ -47,7 +47,7 @@ public class MessagesGatewayController {
         try {
             address = InetAddress.getByName(stringAddress);
         } catch (UnknownHostException e) {
-            System.out.println("Erro para inicializar o endereço no listenHearBeat do MessagesGateway: " + e);
+            System.out.println("Erro para inicializar o endereco no listenHearBeat do MessagesGateway: " + e);
             return;
         }
 
@@ -59,13 +59,13 @@ public class MessagesGatewayController {
     @Post("/send")
     public Message send(@Body Message message) throws Exception {
         System.out.println("Executando o send dentro do Messages gateway, com protocolo: " + this.protocol);
-        // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
+        // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteudo=" + content);
         String body;
         try {
             body = objectMapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
             throw new RemoteException(
-                "MessageService Gateway error: Erro interno ao processar requisição",
+                "MessageService Gateway error: Erro interno ao processar requisicao",
                 500
             );
         }
@@ -73,14 +73,14 @@ public class MessagesGatewayController {
         ServiceRecord service = this.registry.getNextService();
 
         if (service == null) {
-            System.out.println("MessageService Gateway error:  Não há servidores disponíveis!");
+            System.out.println("MessageService Gateway error:  Nao ha servidores disponiveis!");
             throw new RemoteException(
-                "MessageService Gateway error:  Não há servidores disponíveis!",
+                "MessageService Gateway error:  Nao ha servidores disponiveis!",
                 503
             );
         }
 
-        System.out.println("Enviando requisição para porta: " + service.getPort());
+        System.out.println("Enviando requisicao para porta: " + service.getPort());
 
         HttpRequest req = HttpRequest.newBuilder()
             .uri(URI.create("http://" + "127.0.0.1" + ":" + service.getPort() + "/messages/send"))

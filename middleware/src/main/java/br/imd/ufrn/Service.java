@@ -11,7 +11,7 @@ public class Service {
     @Get("/add")
     public Sum getMethod(@Param("num1") int num1, @Param("num2") int num2, @Body TestObject testObject) {
         Sum sum = new Sum(num1, num2, testObject.getTest());
-        System.out.println("Executando método getMethod com anotação add!");
+        System.out.println("Executando método getMethod com anotacao add!");
         return sum;
     }
 }

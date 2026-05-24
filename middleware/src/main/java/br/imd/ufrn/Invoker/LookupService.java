@@ -33,7 +33,7 @@ public class LookupService {
         Class<?> serviceClass = remoteServices.get(id);
         
         if (serviceClass == null) {
-            throw new LookupException("LookupException: Não foi possível encontrar o serviço com id " + id, 404);
+            throw new LookupException("LookupException: Nao foi possivel encontrar o servico com id " + id, 404);
         }
 
         return serviceClass;
@@ -47,7 +47,7 @@ public class LookupService {
             }
         }
 
-        throw new LookupException("LookupException: Não foi possível encontrar o método com a rota " + route , 404);
+        throw new LookupException("LookupException: Nao foi possivel encontrar o metodo com a rota " + route , 404);
     }
 
     private boolean methodExists(Method method, String httpMethod, String methodRoute) {
