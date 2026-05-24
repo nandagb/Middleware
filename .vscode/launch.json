@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TCP Gateway",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.gateway.APIGatewayApplication",
+      "args": "8080 tcp"
+    },
+    {
+      "type": "java",
       "name": "TCP Message Service 9005",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
@@ -31,10 +38,10 @@
     },
     {
       "type": "java",
-      "name": "TCP Gateway",
+      "name": "UDP Gateway",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.gateway.APIGatewayApplication",
-      "args": "8080 tcp"
+      "args": "8080 udp"
     },
     {
       "type": "java",
@@ -63,13 +70,6 @@
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
       "args": "9008 udp"
-    },
-    {
-      "type": "java",
-      "name": "UDP Gateway",
-      "request": "launch",
-      "mainClass": "br.imd.ufrn.application.gateway.APIGatewayApplication",
-      "args": "8080 udp"
     }
   ]
 }
