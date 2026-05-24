@@ -16,7 +16,7 @@ import br.imd.ufrn.HTTP.HTTPResponse;
 import br.imd.ufrn.Invoker.Invoker;
 import br.imd.ufrn.Invoker.LookupService;
 
-public class TCPRequestHandler {
+public class TCPRequestHandler implements RequestHandler {
     int port;
     private ServerSocket serverSocket;
     private HTTPMarshaller marshaller;
@@ -123,6 +123,7 @@ public class TCPRequestHandler {
         }
     }
 
+    @Override
     public void start() {
         System.out.println("Handler iniciado");
         try {
