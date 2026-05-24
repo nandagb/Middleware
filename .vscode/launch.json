@@ -3,28 +3,28 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Message Service 9005",
+      "name": "TCP Message Service 9005",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
       "args": "9005 tcp"
     },
     {
       "type": "java",
-      "name": "Message Service 9006",
+      "name": "TCP Message Service 9006",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
       "args": "9006 tcp"
     },
     {
       "type": "java",
-      "name": "User Service 9007",
+      "name": "TCP User Service 9007",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
       "args": "9007 tcp"
     },
     {
       "type": "java",
-      "name": "User Service 9008",
+      "name": "TCP User Service 9008",
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
       "args": "9008 tcp"
@@ -35,6 +35,34 @@
       "request": "launch",
       "mainClass": "br.imd.ufrn.application.gateway.APIGatewayApplication",
       "args": "8080 tcp"
+    },
+    {
+      "type": "java",
+      "name": "UDP Message Service 9005",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
+      "args": "9005 udp"
+    },
+    {
+      "type": "java",
+      "name": "UDP Message Service 9006",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.MessageServiceApplication",
+      "args": "9006 udp"
+    },
+    {
+      "type": "java",
+      "name": "UDP User Service 9007",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
+      "args": "9007 udp"
+    },
+    {
+      "type": "java",
+      "name": "UDP User Service 9008",
+      "request": "launch",
+      "mainClass": "br.imd.ufrn.application.services.UserServiceApplication",
+      "args": "9008 udp"
     },
     {
       "type": "java",

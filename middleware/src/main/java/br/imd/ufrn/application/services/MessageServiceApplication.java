@@ -23,12 +23,23 @@ public class MessageServiceApplication {
         Middleware middleware = new Middleware();
         middleware.register(MessageService.class);
 
-        new Thread( () -> sendHeartBeat(port)).start();
-        // 9005
+        new Thread( () -> sendHeartBeat(port, protocol)).start();
+
         middleware.start(port, protocol);
     }
 
-    public static void sendHeartBeat(int port) {
+    public static void sendHeartBeat(int port, String protocol) {
+        switch (protocol) {
+            case "tcp":
+                sendTCPHeartBeat(port);
+                break;
+            case "udp":
+                sendUDPHeartBeat(port);
+                break;
+        }
+    }
+
+    public static void sendTCPHeartBeat(int port) {
         HttpClient  httpClient;
 
         httpClient = HttpClient.newBuilder()
@@ -37,27 +48,33 @@ public class MessageServiceApplication {
             .build();
 
         while(true) {
-                System.out.println("Enviando Hearbeat");
-                HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://" + "127.0.0.1" + ":" + 8080 + "/messages/heartbeat?address=127.0.0.1&port=" + port))
-                    .timeout(Duration.ofSeconds(2))
-                    .POST(HttpRequest.BodyPublishers.noBody())
-                    .build();
+            System.out.println("Enviando Hearbeat TCP");
+            HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://" + "127.0.0.1" + ":" + 8080 + "/messages/heartbeat?address=127.0.0.1&port=" + port))
+                .timeout(Duration.ofSeconds(2))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
 
-                try {
-                    httpClient.send(req, HttpResponse.BodyHandlers.discarding());
-                    System.out.println("heartBeat enviado!");
-                } catch (IOException e) {
-                    System.out.println("IOException: erro ao enviar HeartBeat do Message Service: " + e);
-                } catch (InterruptedException e) {
-                    System.out.println("InterruptedException: erro ao enviar HeartBeat  do Message Service: " + e);
-                }
-
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    System.out.println("InterruptedException: ao chamar sleep no MessageService");
-                }
+            try {
+                httpClient.send(req, HttpResponse.BodyHandlers.discarding());
+                System.out.println("heartBeat enviado!");
+            } catch (IOException e) {
+                System.out.println("IOException: erro ao enviar HeartBeat do Message Service: " + e);
+            } catch (InterruptedException e) {
+                System.out.println("InterruptedException: erro ao enviar HeartBeat  do Message Service: " + e);
             }
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                System.out.println("InterruptedException: ao chamar sleep no MessageService");
+            }
+        }
+    }
+
+    public static void sendUDPHeartBeat(int port) {
+        while (true) {
+            System.out.println("Enviando Hearbeat UDP");
+        }
     }
 }
