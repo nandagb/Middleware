@@ -24,18 +24,20 @@ import br.imd.ufrn.application.models.User;
 @RemoteService("/users")
 public class UsersGatewayController {
     // private HttpClient httpClient;
+    // private ObjectMapper objectMapper;
     private static final HttpClient httpClient =
     HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_1_1)
         .connectTimeout(Duration.ofSeconds(2))
         .build();
 
-    // private ObjectMapper objectMapper;
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private GatewayRegistry registry;
+    private String protocol;
 
     public UsersGatewayController() {
         this.registry = new GatewayRegistry();
+        this.protocol = MiddlewareConfig.getProtocol();
     }
 
     @Post("/heartbeat")
@@ -56,7 +58,7 @@ public class UsersGatewayController {
 
     @Post("/create")
     public User create(@Body User user) throws Exception {
-        System.out.println("Executando o create dentro do Users gateway");
+        System.out.println("Executando o create dentro do Users gateway, com protocolo: " + this.protocol);
         // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
         String body;
         try {

@@ -33,9 +33,11 @@ public class MessagesGatewayController {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private GatewayRegistry registry;
+    private String protocol;
 
     public MessagesGatewayController() {
         this.registry = new GatewayRegistry();
+        this.protocol = MiddlewareConfig.getProtocol();
     }
 
     @Post("/heartbeat")
@@ -56,7 +58,7 @@ public class MessagesGatewayController {
 
     @Post("/send")
     public Message send(@Body Message message) throws Exception {
-        System.out.println("Executando o send dentro do Messages gateway");
+        System.out.println("Executando o send dentro do Messages gateway, com protocolo: " + this.protocol);
         // System.out.println("MessageService: de=" + senderId + " para=" + receiverId + " conteúdo=" + content);
         String body;
         try {
