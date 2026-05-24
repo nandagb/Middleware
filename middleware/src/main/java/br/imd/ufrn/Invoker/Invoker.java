@@ -52,7 +52,7 @@ public class Invoker {
             System.out.println("IllegalAccessException: " + e);
             return new ResponseMessage("IllegalAccessException: Nao foi possivel invocar o metodo" + method.getName() + " da classe " + serviceClass.getName() + " remotamente", 500);
         } catch (InvocationTargetException e) {
-            System.out.println("InvocationTargetException!");
+            System.out.println("InvocationTargetException! " + e.getMessage());
             Throwable cause = e.getCause();
 
             if(cause instanceof RemoteException) {

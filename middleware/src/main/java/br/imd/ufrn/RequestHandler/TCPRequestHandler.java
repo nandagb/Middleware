@@ -50,7 +50,7 @@ public class TCPRequestHandler implements RequestHandler {
     }
 
     private void processRequest(Socket connection) {
-        // System.out.println("Conexão aceita!");
+        // System.out.println("Conexao aceita!");
         // System.out.println("INICIO CONEXÃO");
         
         BufferedReader clientRequest = null;
@@ -78,6 +78,7 @@ public class TCPRequestHandler implements RequestHandler {
                 HTTPRequest request = this.marshaller.getHTTPRequest(clientRequest);
 
                 if (request == null) {
+                    System.out.println("Nao foi possivel processar a requisicao!");
                     // Connection closed by client or EOF reached
                     break;
                 }

@@ -82,23 +82,30 @@ public class MessagesGatewayController {
 
         System.out.println("Enviando requisicao para porta: " + service.getPort());
 
-        HttpRequest req = HttpRequest.newBuilder()
-            .uri(URI.create("http://" + "127.0.0.1" + ":" + service.getPort() + "/messages/send"))
-            .timeout(Duration.ofSeconds(2))
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(body))
-            .build();
-        try {
-            HttpResponse<String> res = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
+        if (this.protocol.equals("tcp")) {
+            HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://" + "127.0.0.1" + ":" + service.getPort() + "/messages/send"))
+                .timeout(Duration.ofSeconds(2))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
 
-            Message responseMessage = objectMapper.readValue(res.body(), Message.class);
+            try {
+                HttpResponse<String> res = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
-            return responseMessage;
-        } catch (Exception e) {
-            throw new RemoteException(
-                "MessageService Gateway error: Erro ao comunicar com UserService " + e,
-                502
-            );
+                Message responseMessage = objectMapper.readValue(res.body(), Message.class);
+
+                return responseMessage;
+            } catch (Exception e) {
+                throw new RemoteException(
+                    "MessageService Gateway error: Erro ao comunicar com UserService " + e,
+                    502
+                );
+            }
+        }
+        else {
+            System.out.println("Enviando requisicao para o servidor!");
+            return null;
         }
     }
 }

@@ -19,6 +19,6 @@ public class APIGatewayApplication {
         middleware.register(MessagesGatewayController.class);
         //classe com anotações de user
         middleware.register(UsersGatewayController.class);
-        middleware.start(8080, "tcp");
+        middleware.start(port, protocol);
     }
 }
