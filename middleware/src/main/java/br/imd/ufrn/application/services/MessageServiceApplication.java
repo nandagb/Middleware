@@ -1,6 +1,9 @@
 package br.imd.ufrn.application.services;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 import br.imd.ufrn.Middleware;
+import br.imd.ufrn.HTTP.HTTPRequest;
 
 public class MessageServiceApplication {
     public static void main( String[] args ) {
@@ -73,8 +77,41 @@ public class MessageServiceApplication {
     }
 
     public static void sendUDPHeartBeat(int port) {
-        while (true) {
-            System.out.println("Enviando Hearbeat UDP");
-        }
+        try {
+			//pode ser que mude depois
+			String gatewayAdressString = "127.0.0.1";
+			InetAddress gatewayAddress = InetAddress.getByName(gatewayAdressString);
+            DatagramSocket serverSocket = new DatagramSocket();
+
+			while (true) {
+				///// assembling request
+				HTTPRequest request = new HTTPRequest("POST " + "/messages/heartbeat?address=127.0.0.1&port=" + port + " HTTP/1.1");
+				request.setHeader("Host: localhost");
+				request.setHeader("Content-Type: application/json");
+				int length = 0;
+				request.setHeader("Content-Length: " + length);
+				request.setContentLength(length);
+				/////
+
+				String msg = request.toString();
+				// System.out.println("Enviando heartbeat, tum tum: ");
+				// System.out.println(msg);
+
+				byte[] heartBeatMessage = msg.getBytes();
+				DatagramPacket heartBeatPacket = new DatagramPacket(heartBeatMessage, heartBeatMessage.length, gatewayAddress, 8080);
+                System.out.println("heartBeat enviado!");
+
+				serverSocket.send(heartBeatPacket);
+				// Interval for sending heartbeat (every 3s)
+				Thread.sleep(3000);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException nfe) {
+			System.out.println("NumberFormatException: Erro ao converter numero: " + nfe.getMessage());
+
+		} catch (Exception e) {
+			System.out.println("Erro inesperado: " + e.getMessage());
+		}
     }
 }
