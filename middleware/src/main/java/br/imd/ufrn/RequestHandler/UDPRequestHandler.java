@@ -63,7 +63,7 @@ public class UDPRequestHandler implements RequestHandler {
         }
 
         while (true) {
-            byte[] clientMessage = new byte[1024];
+            byte[] clientMessage = new byte[4096];
             DatagramPacket clientPacket = new DatagramPacket(clientMessage, clientMessage.length);
             try {
                 serverSocket.receive(clientPacket);
