@@ -1,4 +1,4 @@
-package br.imd.ufrn;
+package br.imd.ufrn.Marshaller;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

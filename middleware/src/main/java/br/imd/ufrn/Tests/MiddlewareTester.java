@@ -1,5 +1,6 @@
-package br.imd.ufrn;
+package br.imd.ufrn.Tests;
 
+import br.imd.ufrn.Middleware;
 import br.imd.ufrn.application.services.MessageService;
 
 public class MiddlewareTester {

@@ -1,4 +1,4 @@
-package br.imd.ufrn;
+package br.imd.ufrn.Tests;
 
 public class Sum {
     private int num1;

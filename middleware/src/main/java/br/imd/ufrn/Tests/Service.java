@@ -1,10 +1,9 @@
-package br.imd.ufrn;
+package br.imd.ufrn.Tests;
 
 import br.imd.ufrn.Annotations.Body;
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Annotations.Param;
 import br.imd.ufrn.Annotations.RemoteService;
-import br.imd.ufrn.TestObject;
 
 @RemoteService("/calc")
 public class Service {

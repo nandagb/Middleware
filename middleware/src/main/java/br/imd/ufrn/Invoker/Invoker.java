@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
-import br.imd.ufrn.Marshaller;
 import br.imd.ufrn.ResponseMessage;
 import br.imd.ufrn.Annotations.Get;
 import br.imd.ufrn.Annotations.RemoteService;
@@ -13,6 +12,7 @@ import br.imd.ufrn.Exceptions.LookupException;
 import br.imd.ufrn.Exceptions.MarshalException;
 import br.imd.ufrn.Exceptions.RemoteException;
 import br.imd.ufrn.HTTP.HTTPRequest;
+import br.imd.ufrn.Marshaller.Marshaller;
 
 public class Invoker {
     private LifecycleManager lifecycleManager;
