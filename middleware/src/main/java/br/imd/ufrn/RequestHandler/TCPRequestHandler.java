@@ -83,7 +83,7 @@ public class TCPRequestHandler implements RequestHandler {
                     break;
                 }
 
-                System.out.println("received request\n" + request.toString());
+                System.out.println("received request AAAAAAA\n" + request.toString());
 
                 // Process the request
                 ResponseMessage responseMessage = invoker.invoke(request);
